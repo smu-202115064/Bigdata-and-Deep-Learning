@@ -14,6 +14,9 @@ model = torch.nn.Sequential(
 )
 
 lr = 1e-6
+
+optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
 loss_arr = []
 
 for t in range(50000):
@@ -29,9 +32,7 @@ for t in range(50000):
     # 5-3. 경사하강법 적용
     loss.backward()
 
-    with torch.no_grad():
-        for param in model.parameters():
-            param -= lr * param.grad
-        model.zero_grad()
+    optimizer.step()
+    optimizer.zero_grad()
 
 plt.plot([loss.cpu().detach() for loss in loss_arr])
