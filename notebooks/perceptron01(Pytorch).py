@@ -8,7 +8,7 @@ N, Din, Dout = 64, 4, 2
 
 x = torch.randn(N, Din, device=device)
 y = torch.randn(N, Dout, device=device)
-w = torch.randn(Din, Dout, device=device)
+w = torch.randn(Din, Dout, device=device, requires_grad=True)
 
 lr = 1e-6
 loss_arr = []
@@ -22,11 +22,11 @@ for t in range(50000):
     loss_arr.append(loss)
 
     # 5-3. 경사하강법 적용
-    grad_y_hat = y_hat - y
-    grad_w = x.T.mm(grad_y_hat)
+    loss.backward()
 
-    # 5-4. w를 갱신
-    w -= lr * grad_w
+    with torch.no_grad():
+        w -= lr * w.grad
+        w.grad.zero_()
 
 
-plt.plot(loss_arr)
+plt.plot([loss.detach() for loss in loss_arr])
