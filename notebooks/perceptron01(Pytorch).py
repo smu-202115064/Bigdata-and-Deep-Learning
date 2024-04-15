@@ -21,6 +21,8 @@ for t in range(50000):
     y_hat = model(x)
 
     # 5-2. loss 계산
+    # loss = 0.5*(y_hat - y).pow(2).sum()
+    # loss = torch.nn.functional.mse_loss(y_hat, y, reduction='sum') * 0.5
     loss = torch.nn.functional.mse_loss(y_hat, y)
     loss_arr.append(loss)
 
