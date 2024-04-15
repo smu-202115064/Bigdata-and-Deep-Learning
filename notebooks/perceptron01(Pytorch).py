@@ -4,18 +4,24 @@ import matplotlib.pyplot as plt
 
 device = torch.device('cpu')
 
+
+class MyOneLayerNet(torch.nn.Module):
+    def __init__(self, Din, Dout) -> None:
+        super(MyOneLayerNet, self).__init__()
+        self.linear = torch.nn.Linear(Din, Dout)
+
+    def forward(self, x):
+        y_hat = self.linear(x)
+        return y_hat
+
+
 N, Din, Dout = 64, 4, 2
 
 x = torch.randn(N, Din, device=device)
 y = torch.randn(N, Dout, device=device)
 
-model = torch.nn.Sequential(
-    torch.nn.Linear(Din, Dout),
-)
-
-lr = 1e-6
-
-optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+model = MyOneLayerNet(Din, Dout)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-6)
 
 loss_arr = []
 
@@ -24,12 +30,9 @@ for t in range(50000):
     y_hat = model(x)
 
     # 5-2. loss 계산
-    # loss = 0.5*(y_hat - y).pow(2).sum()
-    # loss = torch.nn.functional.mse_loss(y_hat, y, reduction='sum') * 0.5
     loss = torch.nn.functional.mse_loss(y_hat, y)
     loss_arr.append(loss)
 
-    # 5-3. 경사하강법 적용
     loss.backward()
 
     optimizer.step()
