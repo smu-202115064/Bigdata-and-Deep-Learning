@@ -1,2 +1,5 @@
 *
 !.gitignore
+
+# 실습에 사용되는 값
+!mlp_weight.npz
